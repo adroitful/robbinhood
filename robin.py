@@ -8,7 +8,7 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-rh.authentication.login(username='username', password='pass', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+rh.authentication.login(username='username', password='password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 while infinite==1:
     balance = float(rh.profiles.load_account_profile(info='buying_power'))
@@ -35,25 +35,51 @@ while infinite==1:
     crypto=crypto_balance[0]
     crypto_bal=float(crypto)
     if enteredTrade == False and crypto_bal == 0:
-        if rsi<=35:
-            print("Buying RSI is below 35!")
+        macd=float(analysis.indicators["MACD.macd"])
+        print('MACD is:')
+        print(macd)
+        if macd<-0.0001:
+            print("Buying! MACD is favorable")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
-            print('amout of stock to purchase')
+            print('Amount to purchase:')
             print(stock_buy)
-            buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='DOGE', quantity=stock_buy, timeInForce='gtc', jsonify=True)
+            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='DOGE', quantity=stock_buy, timeInForce='gtc', jsonify=True)
+            buy_order=rh.orders.order_buy_crypto_limit(symbol='DOGE',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
+            print(buy_order)
+            enteredTrade = True   
+
+        if rsi<=35:
+            print("Buying! RSI is below 35!")
+            stock_amount=buying_power/stock_price
+            stock_buy = round(stock_amount, 1)
+            print('Amount to purchase:')
+            print(stock_buy)
+            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='DOGE', quantity=stock_buy, timeInForce='gtc', jsonify=True)
+            buy_order=rh.orders.order_buy_crypto_limit(symbol='DOGE',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
             print(buy_order)
             enteredTrade = True
 
     if enteredTrade == True:
-        if rsi>59:
-            print("Selling RSI is above 60!")
-            crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
-            crypto=crypto_balance[0]
-            crypto_bal=float(crypto)
-            sell_order=rh.orders.order_sell_crypto_by_quantity(symbol='DOGE', quantity=crypto_bal, timeInForce='gtc', jsonify=True)
-            print(sell_order)
-            enteredTrade = False
-            numtrades = numtrades +1
-            balance=float(rh.profiles.load_account_profile(info='buying_power'))
+        print('Listing for sell at 1% profit')
+        crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
+        crypto=crypto_balance[0]
+        crypto_bal=float(crypto)
+        cryptoSell=stock_amount * 0.01
+        sellOrder=stock_amount + cryptoSell
+        sell_order=rh.orders.order_sell_crypto_limit(symbol='DOGE',quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
+        print(sell_order)
+        enteredTrade = False
+        numtrades = numtrades + 1
+        balance=float(rh.profiles.load_account_profile(info='buying_power'))
+        #if rsi>59:
+            #print("Selling RSI is above 60!")
+            #crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
+            #crypto=crypto_balance[0]
+            #crypto_bal=float(crypto)
+            #sell_order=rh.orders.order_sell_crypto_by_quantity(symbol='DOGE', quantity=crypto_bal, timeInForce='gtc', jsonify=True)
+            #print(sell_order)
+            #enteredTrade = False
+            #numtrades = numtrades +1
+            #balance=float(rh.profiles.load_account_profile(info='buying_power'))
     time.sleep(60)
