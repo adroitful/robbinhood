@@ -8,7 +8,7 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-rh.authentication.login(username='gamespsych@gmail.com', password='Diablo71913', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+rh.authentication.login(username='username', password='pass', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 while infinite==1:
     balance = float(rh.profiles.load_account_profile(info='buying_power'))
@@ -16,8 +16,6 @@ while infinite==1:
     print(balance)
     buying_power=balance * 0.95
     numtrades=0
-    # Get 5 minute bar data for Ford stock
-    #historical_quotes = rh.stocks.get_stock_historicals(inputSymbols='F', interval='5minute', span='day')
     price=rh.crypto.get_crypto_quote(symbol='DOGE', info=None)
     print('The current price is:')
     print(price['bid_price'])
