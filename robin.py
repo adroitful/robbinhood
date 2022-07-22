@@ -8,7 +8,7 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-rh.authentication.login(username='gamespsych@gmail.com', password='Diablo71913', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+rh.authentication.login(username='username', password='Password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 while infinite==1:
     balance = float(rh.profiles.load_account_profile(info='buying_power'))
