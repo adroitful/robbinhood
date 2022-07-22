@@ -35,10 +35,10 @@ while infinite==1:
     crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
     crypto=crypto_balance[0]
     crypto_bal=float(crypto)
+    macd=float(analysis.indicators["MACD.macd"])
+    print('MACD is:')
+    print(macd)
     if enteredTrade == False and buying_power > 5:
-        macd=float(analysis.indicators["MACD.macd"])
-        print('MACD is:')
-        print(macd)
         if macd<-0.0001:
             print("Buying! MACD is favorable")
             stock_amount=buying_power/stock_price
