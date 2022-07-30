@@ -53,8 +53,20 @@ while infinite==1:
         print(macd)
     except:
         print("Unable to connect to the Tradingview API to retrieve MACD")
+    try:
+        handler = TA_Handler(
+            symbol='DOGEUSD',
+            exchange='binance',
+            screener='crypto',
+            interval='1d',
+            timeout=None
+        )
+    except:
+        print("Unable to connect to the Tradingview API to get TA")
+    onedanalysis = handler.get_analysis()
+    onedrsi=float(analysis.indicators["RSI"])
     if enteredTrade == False and buying_power > 5:
-        if macd<-0.0001:
+        if macd<-0.0001 and onedrsi < 55:
             print("Buying! MACD is favorable")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
@@ -69,7 +81,7 @@ while infinite==1:
             enteredTrade = True  
             time.sleep(600)
 
-        if rsi<=35:
+        if rsi<=35 and onedrsi > 55:
             print("Buying! RSI is below 35!")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
