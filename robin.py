@@ -8,7 +8,7 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-rh.authentication.login(username='Username', password='Password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+rh.authentication.login(username='user', password='pass', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 while infinite==1:
     try:
@@ -64,7 +64,9 @@ while infinite==1:
     except:
         print("Unable to connect to the Tradingview API to get TA")
     onedanalysis = handler.get_analysis()
-    onedrsi=float(analysis.indicators["RSI"])
+    onedrsi=float(onedanalysis.indicators["RSI"])
+    print("The current 1d RSI is:")
+    print(onedrsi)
     if enteredTrade == False and buying_power > 5:
         if macd<-0.0001 and onedrsi < 55:
             print("Buying! MACD is favorable")
@@ -76,10 +78,23 @@ while infinite==1:
             try:
                 buy_order=rh.orders.order_buy_crypto_limit(symbol='DOGE',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
+                time.sleep(600)
             except:
                 print("Unable to connect to Robinhood to send the buy order")
-            enteredTrade = True  
-            time.sleep(600)
+            enteredTrade = True 
+            try:
+                crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
+                crypto=crypto_balance[0]
+                crypto_bal=float(crypto)
+            except:
+                print("Unable to connect to Robinhood to retrieve your balance")
+            if crypto_bal > 10:
+                try:
+                    rh.orders.cancel_all_crypto_orders()
+                    time.sleep(6)
+                except:
+                    print("Cannot connect to Robinhood to cancel orders.")
+            
 
         if rsi<=35 and onedrsi > 55:
             print("Buying! RSI is below 35!")
@@ -95,6 +110,19 @@ while infinite==1:
                 print("Unable to connect to Robinhood to submit the buy order")
             enteredTrade = True
             time.sleep(600)
+            try:
+                crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
+                crypto=crypto_balance[0]
+                crypto_bal=float(crypto)
+            except:
+                print("Unable to connect to Robinhood to retrieve your balance")
+            if crypto_bal > 10:
+                try:
+                    rh.orders.cancel_all_crypto_orders()
+                    time.sleep(6)
+                except:
+                    print("Cannot connect to Robinhood to cancel orders.")
+            
 
     if enteredTrade == True:
         print('Listing for sell at 1% profit')
@@ -102,6 +130,8 @@ while infinite==1:
             crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
             crypto=crypto_balance[0]
             crypto_bal=float(crypto)
+            crypto_bal = round(crypto_bal, 2)
+            crypto_bal = crypto_bal - 0.01
             cryptoSell=stock_price * 0.01
             sellOrder=stock_price + cryptoSell
             sellOrder=round(sellOrder,3)
