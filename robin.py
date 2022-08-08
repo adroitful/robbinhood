@@ -8,7 +8,7 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-rh.authentication.login(username='user', password='pass', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+rh.authentication.login(username='username', password='password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 while infinite==1:
     try:
@@ -37,7 +37,7 @@ while infinite==1:
         )
         analysis = handler.get_analysis()
         rsi=float(analysis.indicators["RSI"])
-        print("The current RSI is:")
+        print("The current 5m RSI is:")
         print(rsi)
     except:
         print("Unable to connect to the Tradingview API to get TA")
@@ -96,7 +96,7 @@ while infinite==1:
                     print("Cannot connect to Robinhood to cancel orders.")
             
 
-        if rsi<=35 and onedrsi > 55:
+        if rsi<=35 and onedrsi < 55:
             print("Buying! RSI is below 35!")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
