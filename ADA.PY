@@ -10,6 +10,7 @@ import time
 infinite=1
 rh.authentication.login(username='username', password='password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
+orders = 0
 while infinite==1:
     try:
         balance = float(rh.profiles.load_account_profile(info='buying_power'))
@@ -67,7 +68,7 @@ while infinite==1:
     onedrsi=float(onedanalysis.indicators["RSI"])
     print("The current 1d RSI is:")
     print(onedrsi)
-    if enteredTrade == False and buying_power > 5:
+    if enteredTrade == False and buying_power > 50:
         if macd<-0.0001 and onedrsi < 55:
             print("Buying! MACD is favorable")
             stock_amount=buying_power/stock_price
@@ -78,6 +79,7 @@ while infinite==1:
             try:
                 buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
+                orders = 1
                 time.sleep(600)
             except:
                 print("Unable to connect to Robinhood to send the buy order")
@@ -95,6 +97,7 @@ while infinite==1:
             try:
                 buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
+                orders=1
             except:
                 print("Unable to connect to Robinhood to submit the buy order")
             enteredTrade = True
@@ -113,11 +116,12 @@ while infinite==1:
                 crypto_bal=float(crypto)
         except:
                 print("Unable to connect to Robinhood to retrieve your balance")
-        if crypto_bal < 10:
+        if crypto_bal < 10 and orders == 1:
                 try:
                     rh.orders.cancel_all_crypto_orders()
                     enteredTrade = False
                     time.sleep(6)
+                    orders=0
                 except:
                     print("Cannot connect to Robinhood to cancel orders.")
                 

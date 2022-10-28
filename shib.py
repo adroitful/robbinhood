@@ -20,16 +20,16 @@ while infinite==1:
         print("Unable to connect to Robinhood API to retrieve your balance")
     numtrades=0
     try:
-        price=rh.crypto.get_crypto_quote(symbol='SHIB', info=None)
+        price=rh.crypto.get_crypto_quote(symbol='ADA', info=None)
         print('The current price is:')
         print(price['bid_price'])
         stock_price=float(price['bid_price'])
-        stock_price=round(stock_price,8)
+        stock_price=round(stock_price,6)
     except:
         print("Unable to connect to the Robinhood API to retrieve a price")
     try:
         handler = TA_Handler(
-            symbol='SHIBUSD',
+            symbol='ADAUSD',
             exchange='coinbase',
             screener='crypto',
             interval='5m',
@@ -55,7 +55,7 @@ while infinite==1:
         print("Unable to connect to the Tradingview API to retrieve MACD")
     try:
          handler = TA_Handler(
-            symbol='SHIBUSD',
+            symbol='ADAUSD',
             exchange='coinbase',
             screener='crypto',
             interval='5m',
@@ -74,9 +74,9 @@ while infinite==1:
             stock_buy = round(stock_amount, 1)
             print('Amount to purchase:')
             print(stock_buy)
-            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='SHIB', quantity=stock_buy, timeInForce='gtc', jsonify=True)
+            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='ADA', quantity=stock_buy, timeInForce='gtc', jsonify=True)
             try:
-                buy_order=rh.orders.order_buy_crypto_limit(symbol='SHIB',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
+                buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
                 time.sleep(600)
             except:
@@ -91,9 +91,9 @@ while infinite==1:
             stock_buy = round(stock_amount, 1)
             print('Amount to purchase:')
             print(stock_buy)
-            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='SHIB', quantity=stock_buy, timeInForce='gtc', jsonify=True)
+            #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='ADA', quantity=stock_buy, timeInForce='gtc', jsonify=True)
             try:
-                buy_order=rh.orders.order_buy_crypto_limit(symbol='SHIB',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
+                buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
             except:
                 print("Unable to connect to Robinhood to submit the buy order")
@@ -139,7 +139,7 @@ while infinite==1:
         print("at:")
         print(sellOrder)
         try:
-            sell_order=rh.orders.order_sell_crypto_limit(symbol='SHIB',quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
+            sell_order=rh.orders.order_sell_crypto_limit(symbol='ADA',quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
             print(sell_order)
             enteredTrade = False
             numtrades = numtrades + 1
@@ -151,7 +151,7 @@ while infinite==1:
             #crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
             #crypto=crypto_balance[0]
             #crypto_bal=float(crypto)
-            #sell_order=rh.orders.order_sell_crypto_by_quantity(symbol='SHIB', quantity=crypto_bal, timeInForce='gtc', jsonify=True)
+            #sell_order=rh.orders.order_sell_crypto_by_quantity(symbol='ADA', quantity=crypto_bal, timeInForce='gtc', jsonify=True)
             #print(sell_order)
             #enteredTrade = False
             #numtrades = numtrades +1
