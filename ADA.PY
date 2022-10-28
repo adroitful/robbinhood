@@ -7,8 +7,18 @@ from tradingview_ta import TA_Handler, Interval, Exchange
 import tradingview_ta
 import sched
 import time
+decimals=4
 infinite=1
-rh.authentication.login(username='username', password='password', expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
+symbol='ADA'
+TVSymbol='ADAUSD'
+TVExchange='coinbase'
+TVInterval='5m'
+username='username'
+password='password'
+buyMacd='-0.0001'
+buyRsi='35'
+
+rh.authentication.login(username, password, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 orders = 0
 while infinite==1:
@@ -21,19 +31,19 @@ while infinite==1:
         print("Unable to connect to Robinhood API to retrieve your balance")
     numtrades=0
     try:
-        price=rh.crypto.get_crypto_quote(symbol='ADA', info=None)
+        price=rh.crypto.get_crypto_quote(symbol, info=None)
         print('The current price is:')
         print(price['bid_price'])
         stock_price=float(price['bid_price'])
-        stock_price=round(stock_price,4)
+        stock_price=round(stock_price,decimals)
     except:
         print("Unable to connect to the Robinhood API to retrieve a price")
     try:
         handler = TA_Handler(
-            symbol='ADAUSD',
-            exchange='coinbase',
+            symbol=TVSymbol,
+            exchange=TVExchange,
             screener='crypto',
-            interval='5m',
+            interval=TVInterval
             timeout=None
         )
         analysis = handler.get_analysis()
@@ -56,10 +66,10 @@ while infinite==1:
         print("Unable to connect to the Tradingview API to retrieve MACD")
     try:
          handler = TA_Handler(
-            symbol='ADAUSD',
-            exchange='coinbase',
+            symbol=TVSymbol,
+            exchange=TVExchange,
             screener='crypto',
-            interval='5m',
+            interval=TVInterval,
             timeout=None
         )
     except:
@@ -69,7 +79,7 @@ while infinite==1:
     print("The current 1d RSI is:")
     print(onedrsi)
     if enteredTrade == False and buying_power > 50:
-        if macd<-0.0001 and onedrsi < 55:
+        if macd<buyMacd and onedrsi < 55:
             print("Buying! MACD is favorable")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
@@ -77,7 +87,7 @@ while infinite==1:
             print(stock_buy)
             #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='ADA', quantity=stock_buy, timeInForce='gtc', jsonify=True)
             try:
-                buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
+                buy_order=rh.orders.order_buy_crypto_limit(symbol,quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
                 orders = 1
                 time.sleep(600)
@@ -87,7 +97,7 @@ while infinite==1:
             
             
 
-        if rsi<=35 and onedrsi < 55:
+        if rsi<=buyRsi and onedrsi < 55:
             print("Buying! RSI is below 35!")
             stock_amount=buying_power/stock_price
             stock_buy = round(stock_amount, 1)
@@ -95,7 +105,7 @@ while infinite==1:
             print(stock_buy)
             #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='ADA', quantity=stock_buy, timeInForce='gtc', jsonify=True)
             try:
-                buy_order=rh.orders.order_buy_crypto_limit(symbol='ADA',quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
+                buy_order=rh.orders.order_buy_crypto_limit(symbol,quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
                 print(buy_order)
                 orders=1
             except:
@@ -143,7 +153,7 @@ while infinite==1:
         print("at:")
         print(sellOrder)
         try:
-            sell_order=rh.orders.order_sell_crypto_limit(symbol='ADA',quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
+            sell_order=rh.orders.order_sell_crypto_limit(symbol,quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
             print(sell_order)
             enteredTrade = False
             numtrades = numtrades + 1
