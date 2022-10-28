@@ -18,6 +18,8 @@ password='password'
 buyMacd='-0.0001'
 buyRsi='35'
 
+buyMacd=float(buyMacd)
+
 rh.authentication.login(username, password, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
 enteredTrade = False
 orders = 0
