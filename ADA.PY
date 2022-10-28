@@ -43,7 +43,7 @@ while infinite==1:
             symbol=TVSymbol,
             exchange=TVExchange,
             screener='crypto',
-            interval=TVInterval
+            interval=TVInterval,
             timeout=None
         )
         analysis = handler.get_analysis()
