@@ -8,7 +8,6 @@ import tradingview_ta
 import sched
 import time
 infinite=1
-<<<<<<< HEAD
 decimals=4
 symbol='ADA'
 TVSymbol='ADAUSD'
@@ -24,23 +23,6 @@ buyMacd=float(buyMacd)
 buyRsi=float(buyRsi)
 sleeps=0
 rh.authentication.login(username, password, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
-=======
-decimals=4
-symbol='ADA'
-TVSymbol='ADAUSD'
-TVExchange='coinbase'
-TVInterval='5m'
-username='username'
-password='password'
-buyMacd='-0.001'
-buyRsi='35'
-coins = ["DOGE", "ADA", "BTC", "ETC", "ETH", "LTC",  "BCH"]
-
-buyMacd=float(buyMacd)
-buyRsi=float(buyRsi)
-
-rh.authentication.login(username, password, expiresIn=86400, scope='internal', by_sms=True, store_session=True, mfa_code=None, pickle_name='')
->>>>>>> 07070fbe3ed520a28ac8072a408628d0402287dd
 enteredTrade = False
 orders = 0
 while infinite==1:
@@ -48,7 +30,7 @@ while infinite==1:
         balance = float(rh.profiles.load_account_profile(info='buying_power'))
         print('Your available balance is:')
         print(balance)
-        buying_power=balance * 0.95
+        buying_power=balance * 0.98
     except:
         print("Unable to connect to Robinhood API to retrieve your balance")
     numtrades=0
@@ -130,7 +112,6 @@ while infinite==1:
             print('MACD is:')
             print(macd)
         except:
-<<<<<<< HEAD
             print("Unable to connect to the Tradingview API to retrieve MACD")
         try:
             handler = TA_Handler(
@@ -185,44 +166,7 @@ while infinite==1:
                 except:
                     print("Unable to connect to Robinhood to send the buy order")
                 
-=======
-            print("Unable to connect to the Tradingview API to retrieve MACD")
-        try:
-            handler = TA_Handler(
-                symbol=TVSymbol,
-                exchange=TVExchange,
-                screener='crypto',
-                interval=TVInterval,
-                timeout=None
-            )
-        except:
-            print("Unable to connect to the Tradingview API to get TA")
-        onedanalysis = handler.get_analysis()
-        onedrsi=float(onedanalysis.indicators["RSI"])
-        print("The current 1d RSI is:")
-        print(onedrsi)
-    
-        if enteredTrade == False and buying_power > 50:
-            
-            if macd<buyMacd and onedrsi < 55:
-                print("Buying! MACD is favorable")
-                stock_amount=buying_power/stock_price
-                stock_buy = round(stock_amount, 1)
-                print('Amount to purchase:')
-                print(stock_buy)
-                #buy_order=rh.orders.order_buy_crypto_by_quantity(symbol='ADA', quantity=stock_buy, timeInForce='gtc', jsonify=True)
-                try:
-                    buy_order=rh.orders.order_buy_crypto_limit(symbol,quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
-                    print(buy_order)
-                    enteredTrade = True 
-                    orders = 1
-                    time.sleep(900)
-                except:
-                    print("Unable to connect to Robinhood to send the buy order")
-                
->>>>>>> 07070fbe3ed520a28ac8072a408628d0402287dd
 
-<<<<<<< HEAD
             """
 
         if rsi<=buyRsi and onedrsi < 55:
@@ -320,82 +264,3 @@ while infinite==1:
                 #numtrades = numtrades +1
                 #balance=float(rh.profiles.load_account_profile(info='buying_power'))
         time.sleep(20)
-=======
-            
-
-            if rsi<=buyRsi and onedrsi < 55:
-                print("Buying! RSI is below 35!")
-                stock_amount=buying_power/stock_price
-                stock_buy = round(stock_amount, 1)
-                print('Amount to purchase:')
-                print(stock_buy)
-                try:
-                    buy_order=rh.orders.order_buy_crypto_limit(symbol,quantity=stock_buy,limitPrice=stock_price,timeInForce='gtc', jsonify=True)
-                    print(buy_order)
-                    enteredTrade = True
-                    orders=1
-                except:
-                    print("Unable to connect to Robinhood to submit the buy order")
-        
-                time.sleep(1800)
-                try:
-                    crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
-                    crypto=crypto_balance[0]
-                    crypto_bal=float(crypto)
-                except:
-                    print("Unable to connect to Robinhood to retrieve your balance")
-
-        if enteredTrade == True:        
-            try:
-                    crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
-                    crypto=crypto_balance[0]
-                    crypto_bal=float(crypto)
-            except:
-                    print("Unable to connect to Robinhood to retrieve your balance")
-            if crypto_bal < 10 and orders == 1:
-                    try:
-                        rh.orders.cancel_all_crypto_orders()
-                        enteredTrade = False
-                        time.sleep(6)
-                        orders=0
-                    except:
-                        print("Cannot connect to Robinhood to cancel orders.")
-                
-        if enteredTrade == True:
-            print('Listing for sell at 1% profit')
-            try:
-                crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
-                crypto=crypto_balance[0]
-                crypto_bal=float(crypto)
-                crypto_bal = round(crypto_bal, 2)
-                crypto_bal = crypto_bal - 0.01
-                cryptoSell=stock_price * 0.01
-                sellOrder=stock_price + cryptoSell
-                sellOrder=round(sellOrder,3)
-            except:
-                print("Unable to connect to Robinhood to get the price we need to sell at")
-            print('Selling:')
-            print(crypto_bal)
-            print("at:")
-            print(sellOrder)
-            try:
-                sell_order=rh.orders.order_sell_crypto_limit(symbol,quantity=crypto_bal,limitPrice=sellOrder,timeInForce='gtc', jsonify=True)
-                print(sell_order)
-                enteredTrade = False
-                numtrades = numtrades + 1
-                balance=float(rh.profiles.load_account_profile(info='buying_power'))
-            except:
-                print("Unable to connect to Robinhood to send the sell order")
-            #if rsi>59:
-                #print("Selling RSI is above 60!")
-                #crypto_balance=rh.crypto.get_crypto_positions(info='quantity_available')
-                #crypto=crypto_balance[0]
-                #crypto_bal=float(crypto)
-                #sell_order=rh.orders.order_sell_crypto_by_quantity(symbol='ADA', quantity=crypto_bal, timeInForce='gtc', jsonify=True)
-                #print(sell_order)
-                #enteredTrade = False
-                #numtrades = numtrades +1
-                #balance=float(rh.profiles.load_account_profile(info='buying_power'))
-        time.sleep(20)
-
->>>>>>> 07070fbe3ed520a28ac8072a408628d0402287dd

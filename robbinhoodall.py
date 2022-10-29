@@ -15,7 +15,7 @@ TVExchange='coinbase'
 TVInterval='5m'
 username='username'
 password='password'
-buyMacd='-0.0001'
+buyMacd='-0.0004'
 buyRsi='35'
 coins = ["DOGE", "ADA", "BTC", "ETC", "ETH", "LTC",  "BCH"]
 
